@@ -4,9 +4,9 @@ yum update -y
 ######################################
 
 # zsh
-read -p "是否需要安装一套开发环境,zsh之类的? y or n?  " zsh
+read -p "是否需要安装一套开发环境,zsh之类的? 若需要记得ctrl+D跳出来zsh界面  y or n?  " zsh
 if [ $zsh = "y" ] ; then
-    yum install zsh git autojump autojump-zsh -y
+    yum install vim zsh git autojump autojump-zsh -y
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     echo "zsh开发环境完成................"
 fi
@@ -23,7 +23,7 @@ fi
 ##########################################
 
 # lamp
-read -p "是否需要安装Lamp环境即Linux、apache、mysql、php等常见插件?y or n?  " lamp
+read -p "是否需要安装Lamp环境即Linux、apache、mysql、php等常见插件?如果需要进去也需要ctrl+D退出  y or n?  " lamp
 if [ $lamp = "y" ] ; then
     yum -y install wget screen git 
     git clone https://github.com/teddysun/lamp.git
@@ -46,8 +46,8 @@ if [ $ssr = "y" ] ; then
 fi
 ###################################################
 
-# backend
-read -p "是否需要Django后台服务器? y or n?       " django
+# backend 需要账号与密码
+read -p "是否需要Django后台服务器?这里是直接运行，而数据库密码为admin，名称为iot，若是希望自己来的，则将启动的两行注释掉即可 y or n?       " django
 if [ $django = "y" ] ;then
     git clone https://github.com/tyrantqiao/dataPlatform.git
     cd dataPlatform
