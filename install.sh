@@ -5,7 +5,7 @@ yum update -y
 
 # zsh
 read -p "是否需要安装一套开发环境,zsh之类的? y or n?  " zsh
-if [ $zsh = "y"] ; then
+if [ $zsh = "y" ] ; then
     yum install zsh git autojump autojump-zsh -y
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     echo "zsh开发环境完成................"
@@ -16,7 +16,7 @@ fi
 
 # python3
 read -p "是否需要安装python3.6环境? y or n?   " python
-if [ $python = "y"] ; then
+if [ $python = "y" ] ; then
     wget https://www.moerats.com/usr/shell/Python3/CentOS_Python3.6.sh && sh CentOS_Python3.6.sh
     echo "python3 安装完成................"
 fi
@@ -24,7 +24,7 @@ fi
 
 # lamp
 read -p "是否需要安装Lamp环境即Linux、apache、mysql、php等常见插件?y or n?  " lamp
-if [ $lamp = "y"] ; then
+if [ $lamp = "y" ] ; then
     yum -y install wget screen git 
     git clone https://github.com/teddysun/lamp.git
     cd lamp
@@ -38,7 +38,7 @@ fi
 
 # ssr
 read -p "是否需要安装ssr？y or n?   " ssr
-if [ $ssr = "y"] ; then
+if [ $ssr = "y" ] ; then
     wget --no-check-certificate -O shadowsocks-all.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-all.sh
     chmod +x shadowsocks-all.sh
     ./shadowsocks-all.sh 2>&1 | tee shadowsocks-all.log
