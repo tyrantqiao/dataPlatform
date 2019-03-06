@@ -19,7 +19,7 @@ from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 # qiao: apis for frontend
-from api.views import NodesListViewSet
+from api.views import NodesListViewSet,DataListViewSet
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
 
@@ -40,6 +40,7 @@ class UserViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'nodes', NodesListViewSet)
+router.register(r'data', DataListViewSet)
 
 
 # qiao: add rest framwork's login and logout views

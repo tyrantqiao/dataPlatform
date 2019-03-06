@@ -15,7 +15,7 @@ class Nodes(models.Model):
     def __str__(self):
         return self.name + self.id
 
-class Temperature(models.Model):
+class Data(models.Model):
     id = models.AutoField(primary_key=True)
     node_id = models.ForeignKey(Nodes, on_delete=models.CASCADE)
     val = models.IntegerField()
@@ -24,7 +24,7 @@ class Temperature(models.Model):
     record_time = models.DateField()
 
     class Meta:
-        verbose_name = "温度"
+        verbose_name = "数值表"
         verbose_name_plural = verbose_name
 
     def __str__(self):
