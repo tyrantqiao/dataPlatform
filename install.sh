@@ -47,17 +47,22 @@ fi
 ###################################################
 
 # backend 需要账号与密码
-read -p "是否需要Django后台服务器?这里是直接运行，而数据库密码为admin，名称为iot，若是希望自己来的，则将启动的两行注释掉即可 y or n?       " django
+read -p "是否需要Django后台服务器? y or n?       " django
 if [ $django = "y" ] ;then
     git clone https://github.com/tyrantqiao/dataPlatform.git
     cd dataPlatform
     source backend/bin/activate
     pip3 install -r requirements.txt
     cd iot
-    read -p "后台开启的端口是: " port
-    python3 manage.py runserver 0.0.0.0:$port &
+    read -p "后台程序需要mysql的密码，用于创建数据库以及连接，若是希望自己设置，则到iot/settings.py自行设置，此处输入n即可，若是想直接开启输入mysql密码即可.    " password
+    if [ $password != 'n' ] ; then
+        sed -i "s/%5QWERzxc/$password/p" iot/settings.py
+        mysqladmin -u root -p"$password" create iot
+        read -p "同时应注意后面给的前端平台使用端口是8000，需要注意不能开启一样的端口。后台开启的端口是: " port
+        python3 manage.py runserver 0.0.0.0:$port &
+        echo "后台启动成功......查看http://localhost:$port ........."
+    fi
     cd ...
-    echo "后台启动成功................"
 fi
 ####################################################
 
@@ -76,7 +81,7 @@ if [ $front = "y" ]; then
     cd ant_frontend
     npm install
     npm start &
-    echo "前端启动成功............."
+    echo "前端启动成功.............  请查看http://localhost:8000 ........"
     cd ..
 fi
 #######################################################

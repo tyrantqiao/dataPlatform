@@ -1,0 +1,12 @@
+{
+
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'iot'
+        'USER': 'root',
+        'PASSWORD': 'demo',
+        'PASSWORD': 'demo',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+    }
+}
