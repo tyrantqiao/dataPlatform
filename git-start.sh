@@ -1,10 +1,11 @@
 # 启动ssh的密钥的一键脚本
+echo "先要启动ssh-agent才能进行后面的操作"
+eval $(ssh-agent -s)
 read -p "是否需要生成deploy key，方便直接pull，push以.git的形式? y or n?    " git
 if [ $git = "y" ] ; then
     echo "生成形式直接默认即可，生成路径需要自己记录，最好放在当前目录下"
     read -p "请输入你的github邮箱：" email
     ssh-keygen -t rsa -C "$email"
-    eval $(ssh-agent -s)
     read -p "请输入你的id_rsa文件存放位置" location
     ssh-add $id_rsa
     cat $id_rsa.pub
@@ -21,7 +22,6 @@ if [ $replay = "y" ] ; then
        reLocation="$(pwd)/id_rsa"
        echo "你的密钥地址在$reLocation"
    fi
-   eval $(ssh-agent -s)
    ssh-add $reLocation
    ssh -T git@github.com
    echo "密钥已生效............................."

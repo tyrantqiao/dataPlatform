@@ -56,7 +56,7 @@ if [ $django = "y" ] ;then
     cd iot
     read -p "后台程序需要mysql的密码，用于创建数据库以及连接，若是希望自己设置，则到iot/settings.py自行设置，此处输入n即可，若是想直接开启输入mysql密码即可.    " password
     if [ $password != 'n' ] ; then
-        sed -i "s/%5QWERzxc/$password/p" iot/settings.py
+        sed -i "s/%5QWERzxc/$password/p" $(pwd)iot/settings.py
         mysqladmin -u root -p"$password" create iot
         read -p "同时应注意后面给的前端平台使用端口是8000，需要注意不能开启一样的端口。后台开启的端口是: " port
         python3 manage.py runserver 0.0.0.0:$port &
