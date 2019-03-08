@@ -59,7 +59,7 @@ if [ $django = "y" ] ;then
         sed -i "s/%5QWERzxc/$password/p" $(pwd)iot/settings.py
         mysqladmin -u root -p"$password" create iot
         read -p "同时应注意后面给的前端平台使用端口是8000，需要注意不能开启一样的端口。后台开启的端口是: " port
-        python3 manage.py runserver 0.0.0.0:$port &
+        nohup python3 manage.py runserver 0.0.0.0:$port &
         echo "后台启动成功......查看http://localhost:$port ........."
     fi
     cd ...
@@ -80,7 +80,7 @@ if [ $front = "y" ]; then
     git clone https://github.com/tyrantqiao/ant_frontend.git
     cd ant_frontend
     npm install
-    npm start &
+    nohup npm start &
     echo "前端启动成功.............  请查看http://localhost:8000 ........"
     cd ..
 fi
