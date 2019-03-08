@@ -94,7 +94,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'iot',
         'USER': 'root',
-        'PASSWORD': '!1@2QqWw',
+        # Here to set your password, By the way, If you want to use install.sh, then this password cannot change until installation completed.
+        'PASSWORD': '%5QWERzxc',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
