@@ -10,4 +10,4 @@ class NodesFilter(django_filters.rest_framework.FilterSet):
 
     class Meta:
         model = Nodes
-        fields = ['id', 'name','type','max_val','min_val']
+        fields = ['id', 'nodeName','nodeType','maxVal','minVal']

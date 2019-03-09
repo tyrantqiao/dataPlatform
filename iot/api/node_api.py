@@ -13,4 +13,3 @@ from django.views.decorators.csrf import csrf_exempt
 def create_node(request):
     if request.method == 'POST':
         req = json.loads(request.body)
-    
