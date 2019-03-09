@@ -6,7 +6,8 @@ yum update -y
 # zsh
 read -p "是否需要安装一套开发环境,zsh之类的? 若需要记得ctrl+D跳出来zsh界面  y or n?  " zsh
 if [ $zsh = "y" ] ; then
-    yum install vim zsh git autojump autojump-zsh -y
+    yum install tree vim zsh git autojump autojump-zsh -y
+    yum install gcc-c++ make -y
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     echo "zsh开发环境完成................"
 fi
@@ -54,6 +55,9 @@ if [ $django = "y" ] ;then
     source backend/bin/activate
     pip3 install -r requirements.txt
     cd iot
+    echo "建立数据库内容"
+    python3 manage.py makemigrations
+    python3 manage.py migrate
     read -p "后台程序需要mysql的密码，用于创建数据库以及连接，若是希望自己设置，则到iot/settings.py自行设置，此处输入n即可，若是想直接开启输入mysql密码即可.    " password
     if [ $password != 'n' ] ; then
         sed -i "s/%5QWERzxc/$password/p" $(pwd)iot/settings.py
@@ -69,7 +73,9 @@ fi
 # npm node
 read -p "是否需要npm，nodejs? y or n     " npm
 if [ $npm = "y" ]; then
-    yum install nodejs -y
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
+    nvm install node
+    node --version
     echo "nodejs安装完成..............................."
 fi
 ###################################################
