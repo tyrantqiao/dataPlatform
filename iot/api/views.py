@@ -13,7 +13,7 @@ class DataListViewSet(viewsets.ModelViewSet):
     """
     接口允许被查看和修改
     """
-    queryset = Data.objects.all().order_by('-date_joined')
+    queryset = Data.objects.all().order_by('-record_time')
     serializer_class = DataSerializer
 
 # 可选用的模型mixins.ListModelMixin, viewsets.GenericViewSet 自定义型
@@ -22,5 +22,5 @@ class NodesListViewSet(viewsets.ModelViewSet):
     """
     接口说明
     """
-    queryset = Nodes.objects.all().order_by('-date_joined')
+    queryset = Nodes.objects.all().order_by('-type')
     serializer_class = NodesSerializer
