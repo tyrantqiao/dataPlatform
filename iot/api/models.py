@@ -3,8 +3,8 @@ from django.db import models
 # Create your models here.
 class Nodes(models.Model):
     id = models.AutoField(primary_key=True)
-    nodeName = models.CharField(max_length=20)
-    nodeType = models.CharField(max_length=20)
+    node_name = models.CharField(max_length=20)
+    node_type = models.CharField(max_length=20)
     maxVal = models.IntegerField()
     minVal = models.IntegerField()
     
@@ -13,7 +13,7 @@ class Nodes(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.nodeName + self.id
+        return self.node_name + self.id
 
 class Data(models.Model):
     id = models.AutoField(primary_key=True)

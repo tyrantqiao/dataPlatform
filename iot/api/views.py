@@ -22,5 +22,5 @@ class NodesListViewSet(viewsets.ModelViewSet):
     """
     接口说明
     """
-    queryset = Nodes.objects.all().order_by('-nodeType')
+    queryset = Nodes.objects.all().order_by('-node_type')
     serializer_class = NodesSerializer
