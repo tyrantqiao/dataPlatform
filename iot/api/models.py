@@ -5,8 +5,8 @@ class Nodes(models.Model):
     id = models.AutoField(primary_key=True)
     node_name = models.CharField(max_length=20)
     node_type = models.CharField(max_length=20)
-    maxVal = models.IntegerField()
     minVal = models.IntegerField()
+    maxVal = models.IntegerField()
     
     class Meta:
         verbose_name = "数据节点"
