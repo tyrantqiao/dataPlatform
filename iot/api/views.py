@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Nodes,Data
+from .models import Nodes,Data,SearchData
 from rest_framework import mixins
 from .serializers import NodesSerializer,DataSerializer,SearchDataSerializer
 from rest_framework import viewsets
