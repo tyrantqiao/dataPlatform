@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Nodes,Data
 from rest_framework import mixins
-from .serializers import NodesSerializer,DataSerializer
+from .serializers import NodesSerializer,DataSerializer,SearchDataSerializer
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,6 +15,10 @@ class DataListViewSet(viewsets.ModelViewSet):
     """
     queryset = Data.objects.all().order_by('-recordTime')
     serializer_class = DataSerializer
+
+class SearchDataListViewSet(viewsets.ModelViewSet):
+    queryset = Nodes.objects.all().order_by('-keyword')
+    serializer_class = SearchDataSerializer
 
 # 可选用的模型mixins.ListModelMixin, viewsets.GenericViewSet 自定义型
 class NodesListViewSet(viewsets.ModelViewSet):

@@ -15,6 +15,21 @@ class Nodes(models.Model):
     def __str__(self):
         return self.node_name + str(self.id)
 
+# 搜索数据
+class SearchData(models.Model):
+    id = models.AutoField(primary_key=True)
+    keyword = models.CharField(max_length=20)
+    count = models.IntegerField()
+    range = models.FloatField()
+    status = models.FloatField()
+
+    class Meta:
+        verbose_name = "搜索数据"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return str(self.id)+ ':' + self.keyword
+
 class Data(models.Model):
     id = models.AutoField(primary_key=True)
     nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE)
