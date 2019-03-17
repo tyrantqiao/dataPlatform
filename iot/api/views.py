@@ -20,7 +20,7 @@ class SearchDataListViewSet(viewsets.ModelViewSet):
     """
     接口说明
     """
-    queryset = Nodes.objects.all().order_by('-keyword')
+    queryset = SearchData.objects.all().order_by('-keyword')
     serializer_class = SearchDataSerializer
 
 # 可选用的模型mixins.ListModelMixin, viewsets.GenericViewSet 自定义型
