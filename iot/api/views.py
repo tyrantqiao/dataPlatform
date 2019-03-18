@@ -10,6 +10,7 @@ from .filters import NodesFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .CountModelMixin import CountModelMixin
+from rest_framework.response import Response
 
 # Create your views here.
 class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
@@ -32,6 +33,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         end_date = self.request.query_params.get('end_date', None)
         if start_date or end_date:
             queryset = queryset.filter(recordTime__range=[start_date, end_date])
+            return response(queryset.objects.all())
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
