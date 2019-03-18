@@ -18,6 +18,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     queryset = Data.objects.all().order_by('-recordTime')
     serializer_class = DataSerializer
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
     search_fields = ('nodeId', 'recordTime', 'val', 'safe', 'unit')
     filter_fields = ('nodeId', 'recordTime', 'val', 'safe', 'unit')
 
@@ -27,6 +28,7 @@ class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     queryset = SearchData.objects.all().order_by('-keyword')
     serializer_class = SearchDataSerializer
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)    
     search_fields = ('keyword', 'count', 'range', 'status')
     filter_fields = ('keyword', 'count', 'range', 'status')
 
@@ -37,5 +39,6 @@ class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     queryset = Nodes.objects.all().order_by('-node_type')
     serializer_class = NodesSerializer
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
     search_fields = ('node_name', 'node_type', 'minVal', 'maxVal')
     filter_fields = ('node_name', 'node_type', 'minVal', 'maxVal')
