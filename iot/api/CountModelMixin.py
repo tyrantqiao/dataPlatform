@@ -20,4 +20,4 @@ class CountModelMixin(object):
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
         if start_date or end_date:
-            queryset = queryset.filter(timestamp__range=[start_date, end_date])
+            queryset = queryset.filter(recordTime__range=[start_date, end_date])
