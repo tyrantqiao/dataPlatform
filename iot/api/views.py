@@ -7,14 +7,26 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from .filters import NodesFilter
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 # Create your views here.
 class DataListViewSet(viewsets.ModelViewSet):
     """
     接口允许被查看和修改
     """
+    model=Data
     queryset = Data.objects.all().order_by('-recordTime')
     serializer_class = DataSerializer
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
+    
+    @action(detail=False)
+    def count(self, request):
+        queryset=self.filter_queryset(self.get_queryset())
+        count=queryset.count()
+        content={'count': count}
+        return Response(content)
+
 
 class SearchDataListViewSet(viewsets.ModelViewSet):
     """
