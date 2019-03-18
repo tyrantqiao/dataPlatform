@@ -9,28 +9,17 @@ from rest_framework import filters
 from .filters import NodesFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from .CountModelMixin import CountModelMixin
 
 # Create your views here.
-class DataListViewSet(viewsets.ModelViewSet):
+class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     接口允许被查看和修改
     """
-    model=Data
     queryset = Data.objects.all().order_by('-recordTime')
     serializer_class = DataSerializer
-    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    search_fields = ('nodeId', 'val', 'unit', 'safe', 'recordTime')
-    filter_fields = ('nodeId', 'val', 'unit', 'safe', 'recordTime')
-    
-    @action(detail=False)
-    def count(self, request):
-        queryset=self.filter_queryset(self.get_queryset())
-        count=queryset.count()
-        content={'count': count}
-        return Response(content)
 
-
-class SearchDataListViewSet(viewsets.ModelViewSet):
+class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     接口说明
     """
@@ -38,7 +27,7 @@ class SearchDataListViewSet(viewsets.ModelViewSet):
     serializer_class = SearchDataSerializer
 
 # 可选用的模型mixins.ListModelMixin, viewsets.GenericViewSet 自定义型
-class NodesListViewSet(viewsets.ModelViewSet):
+class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     接口说明
     """
