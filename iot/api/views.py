@@ -35,6 +35,28 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             queryset = queryset.filter(recordTime__range=[start_date, end_date])
             serializer = DataSerializer(queryset, many=True)
             return Response(serializer.data)
+    
+    @action(detail=False)
+    def getByTimescale(self, request, *args, **kwargs):
+        timescale = self.request.query_params.get('timescale', None)
+        num = self.request.query_params.get('num', None)
+        if timescale == 'month':
+            queryset = Data.objects.filter(recordTime__month=num)
+        elif timescale == 'year':
+            queryset = Data.objects.filter(recordTime__year=num)
+        serializer = DataSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False)
+    def countByTimescale(self, request, *args, **kwargs):
+        timescale = self.request.query_params.get('timescale', None)
+        num = self.request.query_params.get('num', None)
+        if timescale == 'month':
+            queryset = Data.objects.filter(recordTime__month=num)
+        elif timescale == 'year':
+            queryset = Data.objects.filter(recordTime__year=num)
+        serializer = DataSerializer(queryset, many=True)
+        return Response({'count': len(serializer.data)})
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
