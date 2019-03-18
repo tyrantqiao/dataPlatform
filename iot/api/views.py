@@ -33,7 +33,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         end_date = self.request.query_params.get('end_date', None)
         if start_date or end_date:
             queryset = queryset.filter(recordTime__range=[start_date, end_date])
-            return Response(queryset.objects.all())
+            return Response(queryset.all())
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
