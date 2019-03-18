@@ -18,6 +18,8 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     queryset = Data.objects.all().order_by('-recordTime')
     serializer_class = DataSerializer
+    search_fields = ('nodeId', 'recordTime', 'val', 'safe', 'unit')
+    filter_fields = ('nodeId', 'recordTime', 'val', 'safe', 'unit')
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
@@ -25,6 +27,8 @@ class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     queryset = SearchData.objects.all().order_by('-keyword')
     serializer_class = SearchDataSerializer
+    search_fields = ('keyword', 'count', 'range', 'status')
+    filter_fields = ('keyword', 'count', 'range', 'status')
 
 # 可选用的模型mixins.ListModelMixin, viewsets.GenericViewSet 自定义型
 class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
@@ -33,3 +37,5 @@ class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     queryset = Nodes.objects.all().order_by('-node_type')
     serializer_class = NodesSerializer
+    search_fields = ('node_name', 'node_type', 'minVal', 'maxVal')
+    filter_fields = ('node_name', 'node_type', 'minVal', 'maxVal')
