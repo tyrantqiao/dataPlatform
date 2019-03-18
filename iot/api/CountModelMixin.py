@@ -18,6 +18,6 @@ class CountModelMixin(object):
     def get(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         start_date = self.request.query_params.get('start_date', None)
-        end_date = self.request.query_params.get('end_date', Node)
+        end_date = self.request.query_params.get('end_date', None)
         if start_date or end_date:
             queryset = queryset.filter(timestamp__range=[start_date, end_date])
