@@ -19,6 +19,8 @@ class DataListViewSet(viewsets.ModelViewSet):
     queryset = Data.objects.all().order_by('-recordTime')
     serializer_class = DataSerializer
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
+    search_fields = ('nodeId', 'val', 'unit', 'safe', 'recordTime')
+    filter_fields = ('nodeId', 'val', 'unit', 'safe', 'recordTime')
     
     @action(detail=False)
     def count(self, request):
