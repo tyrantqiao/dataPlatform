@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Nodes,Data,SearchData
+from .models import Nodes,Data,SearchData,Order,Commodity
 
 class NodesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,4 +17,16 @@ class SearchDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchData
         # all values
+        fields = '__all__'
+
+class OrderSerializer(serializers.OrderSerializer):
+    class Meta:
+        model = Order
+        # all orders
+        fields = '__all__'
+
+class CommoditySerializer(serializers.CommoditySerializer):
+    class Meata:
+        model = Commodity
+        # all commodities
         fields = '__all__'

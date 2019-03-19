@@ -30,6 +30,36 @@ class SearchData(models.Model):
     def __str__(self):
         return str(self.id)+ ':' + self.keyword
 
+# 商品
+class Commodity(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=25)
+    location = models.CharField(max_length=20)
+    type = models.IntegerField()
+    sales = models.FloatField()
+
+    class Meta:
+        verbose_name = "商品"
+        verbose_name_plural = verbose_name
+    
+    def __str__(self):
+        return str(self.id) + ':' + self.name + ': '+self.location +':' + str(self.type) + ':'+'str(self.sales)
+    
+
+# 订单
+class Order(models.Model):
+    id = models.AutoField(primary_key=True)
+    commodityId = models.ForeignKey(Commodity, on_delete=models.CASCADE)
+    amount = models.FloatField()
+
+    class Meta:
+        verbose_name = "订单"
+        verbose_name_plural = verbose_name
+    
+    def __str__(self):
+        return str(self.id) + ':' self.commodityId + ':' + str(self.amount)
+
+# 数据节点收集数据
 class Data(models.Model):
     id = models.AutoField(primary_key=True)
     nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE)

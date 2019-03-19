@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from .models import Nodes,Data,SearchData
+from .models import Nodes,Data,SearchData,Commodity,Order
 from rest_framework import mixins
-from .serializers import NodesSerializer,DataSerializer,SearchDataSerializer
+from .serializers import NodesSerializer,DataSerializer,SearchDataSerializer,OrderSerializer,CommoditySerializer
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -48,6 +48,17 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         return Response(serializer.data)
     
     @action(detail=False)
+    def segmentByTimescale(self, request, *args, **kwargs):
+        timescale = self.request.query_params.get('timescale', None)
+        num = self.request.query_params.get('num', None)
+        result = []
+        if timescale == 'Year':
+            queryset = Data.objects.filter(recordTime__year=num)
+            for i in range(12):
+                result.insert({i: queryset.filter(recordTime__month=i)})
+        return Response(result)
+
+    @action(detail=False)
     def countByTimescale(self, request, *args, **kwargs):
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
@@ -57,6 +68,35 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             queryset = Data.objects.filter(recordTime__year=num)
         serializer = DataSerializer(queryset, many=True)
         return Response({'count': len(serializer.data)})
+
+class OrderListViewSet(viewsets.ModelViewSet, CountModelMixin):
+    """
+    接口说明
+    """
+    queryset = SearchData.objects.all().order_by('-amount')
+    serializer_class = OrderSerializer
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)    
+    search_fields = ('id', 'commodityId', 'amount')
+    filter_fields = ('id', 'commodityId', 'amount')
+
+    @action(detail=False)
+    def addOrder(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            serializer = OrderSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                
+
+        
+class CommodityListViewSet(viewsets.ModelViewSet, CountModelMixin):
+    """
+    接口说明
+    """
+    queryset = Commodity.objects.all().order_by('-sales')
+    serializer_class = CommoditySerializer
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend,)    
+    search_fields = ('id', 'name', 'location', 'type','sales')
+    filter_fields = ('id', 'name', 'location', 'type','sales')
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
