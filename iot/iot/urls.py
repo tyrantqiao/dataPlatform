@@ -19,11 +19,11 @@ from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 # qiao: apis for frontend
-from api.views import NodesListViewSet,DataListViewSet,SearchDataListViewSet
+from api.views import NodesListViewSet,DataListViewSet,SearchDataListViewSet,OrderListViewSet,CommodityListViewSet
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
 
-# qiao: create rest_framework api 
+# qiao: create rest_framework api
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -42,6 +42,8 @@ router.register(r'users', UserViewSet)
 router.register(r'nodes', NodesListViewSet)
 router.register(r'data', DataListViewSet)
 router.register(r'searchData', SearchDataListViewSet)
+router.register(r'order', OrderListViewSet)
+router.register(r'commodity', CommodityListViewSet)
 
 
 # qiao: add rest framwork's login and logout views

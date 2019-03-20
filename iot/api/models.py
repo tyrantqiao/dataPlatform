@@ -7,7 +7,7 @@ class Nodes(models.Model):
     node_type = models.CharField(max_length=20)
     minVal = models.IntegerField()
     maxVal = models.IntegerField()
-    
+
     class Meta:
         verbose_name = "数据节点"
         verbose_name_plural = verbose_name
@@ -41,10 +41,10 @@ class Commodity(models.Model):
     class Meta:
         verbose_name = "商品"
         verbose_name_plural = verbose_name
-    
+
     def __str__(self):
-        return str(self.id) + ':' + self.name + ': '+self.location +':' + str(self.type) + ':'+'str(self.sales)
-    
+        return str(self.id) + ':' + self.name + ': '+self.location +':' + str(self.type) + ':' + str(self.sales)
+
 
 # 订单
 class Order(models.Model):
@@ -55,9 +55,9 @@ class Order(models.Model):
     class Meta:
         verbose_name = "订单"
         verbose_name_plural = verbose_name
-    
+
     def __str__(self):
-        return str(self.id) + ':' self.commodityId + ':' + str(self.amount)
+        return str(self.id) + ':' + self.commodityId + ':' + str(self.amount)
 
 # 数据节点收集数据
 class Data(models.Model):

@@ -19,14 +19,14 @@ class SearchDataSerializer(serializers.ModelSerializer):
         # all values
         fields = '__all__'
 
-class OrderSerializer(serializers.OrderSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         # all orders
         fields = '__all__'
 
-class CommoditySerializer(serializers.CommoditySerializer):
-    class Meata:
+class CommoditySerializer(serializers.ModelSerializer):
+    class Meta:
         model = Commodity
         # all commodities
         fields = '__all__'
