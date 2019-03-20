@@ -79,19 +79,6 @@ class OrderListViewSet(viewsets.ModelViewSet, CountModelMixin):
     search_fields = ('id', 'commodityId', 'amount')
     filter_fields = ('id', 'commodityId', 'amount')
 
-    @action(detail=False)
-    def addOrder(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            serializer = OrderSerializer(data=request.data)
-            updateId = self.request.query_params.get('commodityId')
-            amount = self.request.query_params.get('amount')
-            updateCommodity = Commodity.objects.filter(commodityId=int(updateId))
-            updateCommodity.sales = updateCommodity.sales + amount
-            if serializer.is_valid():
-                serializer.save()
-                updateCommodity.save()
-            return Response(serializer.data)
-
 class CommodityListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     接口说明
