@@ -86,8 +86,8 @@ class CommodityListViewSet(viewsets.ModelViewSet, CountModelMixin):
     queryset = Commodity.objects.all().order_by('-sales')
     serializer_class = CommoditySerializer
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    search_fields = ('id', 'name', 'location', 'type','sales')
-    filter_fields = ('id', 'name', 'location', 'type','sales')
+    search_fields = ('id', 'name', 'type','sales')
+    filter_fields = ('id', 'name', 'type','sales')
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
