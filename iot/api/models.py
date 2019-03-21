@@ -33,16 +33,16 @@ class SearchData(models.Model):
 # 商品
 class Commodity(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=25)
+    x = models.CharField(max_length=25)
     type = models.IntegerField()
-    sales = models.FloatField()
+    y = models.FloatField()
 
     class Meta:
         verbose_name = "商品"
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return str(self.id) + ':' + self.name + ': ' + str(self.type) + ':' + str(self.sales)
+        return str(self.id) + ':' + self.x + ': ' + str(self.type) + ':' + str(self.y)
 
 
 # 订单

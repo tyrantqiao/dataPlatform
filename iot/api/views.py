@@ -83,11 +83,17 @@ class CommodityListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     接口说明
     """
-    queryset = Commodity.objects.all().order_by('-sales')
+    queryset = Commodity.objects.all().order_by('-y')
     serializer_class = CommoditySerializer
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    search_fields = ('id', 'name', 'type','sales')
-    filter_fields = ('id', 'name', 'type','sales')
+    search_fields = ('id', 'x', 'type','y')
+    filter_fields = ('id', 'x', 'type','y')
+
+
+    @action(detail=False)
+    def getSalesTypeData(self, request, *args, **kwargs):
+        queryset = Commodity.objects.values('x','y','type')
+        return Response(queryset)
 
 class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
