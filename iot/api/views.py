@@ -57,7 +57,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             queryset = Data.objects.filter(recordTime__year=num)
             if type == 'count':
                 for i in range(12):
-                    result.insert(i, {str(i)+'月': len(DataSerializer(queryset.filter(recordTime__month=i), many=True).data)})
+                    result.insert(i, {'x': str(i+1)+'月', 'y': len(DataSerializer(queryset.filter(recordTime__month=i), many=True).data)})
             else:
                 for i in range(12):
                     result.insert(i, {str(i)+'月': DataSerializer(queryset.filter(recordTime__month=i),many=True).data})
