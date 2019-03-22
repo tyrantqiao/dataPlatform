@@ -51,11 +51,16 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     def segmentByTimescale(self, request, *args, **kwargs):
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
+        type = self.request.query_params.get('type', None)
         result = []
-        if timescale == 'Year':
+        if timescale == 'year':
             queryset = Data.objects.filter(recordTime__year=num)
-            for i in range(12):
-                result.insert({i: queryset.filter(recordTime__month=i)})
+            if type == 'count':
+                for i in range(12):
+                    result.insert(i, {str(i)+'月': len(DataSerializer(queryset.filter(recordTime__month=i), many=True).data)})
+            else:
+                for i in range(12):
+                    result.insert(i, {str(i)+'月': DataSerializer(queryset.filter(recordTime__month=i),many=True).data})
         return Response(result)
 
     @action(detail=False)
