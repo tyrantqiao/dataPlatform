@@ -36,6 +36,9 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             serializer = DataSerializer(queryset, many=True)
             return Response(serializer.data)
 
+    """
+    根据时间返回list数据
+    """
     @action(detail=False)
     def getByTimescale(self, request, *args, **kwargs):
         timescale = self.request.query_params.get('timescale', None)
@@ -47,8 +50,11 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         serializer = DataSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    """
+    根据时间尺度分割，并返回相应的数据，其中type有2种类型，默认为data，然后就是count
+    """
     @action(detail=False)
-    def segmentByTimescale(self, request, *args, **kwargs):
+    def segmentData(self, request, *args, **kwargs):
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
         type = self.request.query_params.get('type', None)
@@ -56,19 +62,73 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         if timescale == 'year':
             queryset = Data.objects.filter(recordTime__year=num)
             if type == 'count':
-                for i in range(12):
-                    result.insert(i, {'x': str(i+1)+'月', 'y': len(DataSerializer(queryset.filter(recordTime__month=i), many=True).data)})
+                for i in range(1,13):
+                    result.insert(i, {'x': str(i)+'月', 'y': len(DataSerializer(queryset.filter(recordTime__month=i), many=True).data)})
             else:
-                for i in range(12):
+                for i in range(1,13):
                     result.insert(i, {str(i)+'月': DataSerializer(queryset.filter(recordTime__month=i),many=True).data})
+        elif timescale == 'month':
+            queryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num)
+            if type == 'count':
+                for i in range(1,32):
+                    result.insert(i, {'x': str(i)+'号', 'y': len(DataSerializer(queryset.filter(recordTime__day=i), many=True).data)})
+            else:
+                for i in range(1,32):
+                    result.insert(i, {str(i)+'号': DataSerializer(queryset.filter(recordTime__day=i),many=True).data})
         return Response(result)
 
+    """
+    根据时间尺度返回安全率数值   type有三个值  count、safe、unsafe
+    """
+    @action(detail=False)
+    def segmentSafe(self, request, *args, **kwargs):
+        timescale = self.request.query_params.get('timescale', None)
+        num = self.request.query_params.get('num', None)
+        type = self.request.query_params.get('type', None)
+        result = []
+        if timescale == 'year':
+            safeQueryset = Data.objects.filter(recordTime__year=num,safe=True)
+            unsafeQueryset = Data.objects.filter(recordTime__year=num,safe=False)
+            queryset = Data.objects.filter(recordTime__year=num)
+            if type == 'count':
+                for i in range(1,13):
+                    allNum = len(DataSerializer(queryset.filter(recordTime__month=i),many=True).data)
+                    temp = len(DataSerializer(safeQueryset.filter(recordTime__month=i), many=True).data)
+                    y=temp/allNum*100 if allNum != 0 else 0
+                    result.insert(i,{'x': str(i)+'月','y': y})
+            elif type == 'safe':
+                for i in range(1,13):
+                    result.insert(i, {str(i)+'月': DataSerializer(safeQueryset.filter(recordTime__month=i),many=True).data})
+            else:
+                for i in range(1,13):
+                    result.insert(i, {str(i)+'月': DataSerializer(unsafeQueryset.filter(recordTime__month=i),many=True).data})
+        elif timescale == 'month':
+            safeQueryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num,safe=True)
+            unsafeQueryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num,safe=False)
+            queryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num)
+            if type == 'count':
+                for i in range(1,32):
+                    allNum = len(DataSerializer(queryset.filter(recordTime__day=i),many=True).data)
+                    temp = len(DataSerializer(safeQueryset.filter(recordTime__day=i), many=True).data)
+                    y=temp/allNum*100 if allNum != 0 else 0
+                    result.insert(i,{'x': str(i)+'号','y': y})
+            elif type == 'safe':
+                for i in range(1,32):
+                    result.insert(i, {str(i)+'号': DataSerializer(safeQueryset.filter(recordTime__day=i),many=True).data})
+            else:
+                for i in range(1,32):
+                    result.insert(i, {str(i)+'号': DataSerializer(unsafeQueryset.filter(recordTime__day=i),many=True).data})
+        return Response(result)
+
+    """
+    根据时间返回count值
+    """
     @action(detail=False)
     def countByTimescale(self, request, *args, **kwargs):
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
         if timescale == 'month':
-            queryset = Data.objects.filter(recordTime__month=num)
+            queryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num)
         elif timescale == 'year':
             queryset = Data.objects.filter(recordTime__year=num)
         serializer = DataSerializer(queryset, many=True)
