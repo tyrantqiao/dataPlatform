@@ -62,7 +62,7 @@ class Order(models.Model):
 class Data(models.Model):
     id = models.AutoField(primary_key=True)
     nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE)
-    val = models.IntegerField()
+    val = models.FloatField()
     unit = models.CharField(max_length=10)
     safe = models.BooleanField()
     recordTime = models.DateTimeField()
@@ -72,4 +72,4 @@ class Data(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return str(self.nodeId) + ':' + str(self.val) + self.unit + ',date:' + self.recordTime
+        return str(self.nodeId) + ':' + str(self.val) + self.unit + ',date:' + str(self.recordTime)

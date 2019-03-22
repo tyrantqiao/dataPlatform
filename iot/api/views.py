@@ -11,6 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .CountModelMixin import CountModelMixin
 from rest_framework.response import Response
+from django.db.models import Count
 
 # Create your views here.
 class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
@@ -133,6 +134,21 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             queryset = Data.objects.filter(recordTime__year=num)
         serializer = DataSerializer(queryset, many=True)
         return Response({'count': len(serializer.data)})
+
+    """
+    返回数据收集排名榜，做个名字加数字总和
+    """
+    @action(detail=False)
+    def countRank(self, request, *args, **kwargs):
+        limit = self.request.query_params.get('limit', None)
+        queryset = Data.objects.values('nodeId').annotate(total=Count('nodeId'))
+        #queryset = Data.objects.aggregate(total=Count('nodeId'))
+        result= []
+        #for i in queryset:
+        #    result.append({'hello': i.total})
+        serializer = DataSerializer(queryset, many=True)
+        #return Response(result)
+        return Response(queryset)
 
 class OrderListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
