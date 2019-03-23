@@ -150,7 +150,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         elif type == 'safe':
             queryset = Nodes.objects.annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
             safeQueryset = Nodes.objects.filter(data__safe=True).annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
-            for i in range(len(queryset)):
+            for i in range(len(safeQueryset)):
                 safeRate=safeQueryset[i].num/queryset[i].num*100 if queryset[i].num!=0 else 0
                 result.append({'title': queryset[i].node_name,'total': safeRate})
         return Response(result)
