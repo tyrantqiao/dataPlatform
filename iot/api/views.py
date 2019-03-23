@@ -141,14 +141,11 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     @action(detail=False)
     def countRank(self, request, *args, **kwargs):
         limit = self.request.query_params.get('limit', None)
-        queryset = Data.objects.values('nodeId').annotate(total=Count('nodeId'))
-        #queryset = Data.objects.aggregate(total=Count('nodeId'))
+        queryset = Nodes.objects.annotate(num=Count('data__nodeId'))
         result= []
-        #for i in queryset:
-        #    result.append({'hello': i.total})
-        serializer = DataSerializer(queryset, many=True)
-        #return Response(result)
-        return Response(queryset)
+        for i in queryset:
+            result.append({'title': i.node_name,'total': i.num})
+        return Response(result)
 
 class OrderListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
