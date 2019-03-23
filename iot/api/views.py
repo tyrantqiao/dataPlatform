@@ -141,10 +141,18 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     @action(detail=False)
     def countRank(self, request, *args, **kwargs):
         limit = self.request.query_params.get('limit', None)
-        queryset = Nodes.objects.annotate(num=Count('data__nodeId'))[:int(limit)]
+        type = self.request.query_params.get('type', None)
         result= []
-        for i in queryset:
-            result.append({'title': i.node_name,'total': i.num})
+        if type == 'data':
+            queryset = Nodes.objects.annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
+            for i in queryset:
+                result.append({'title': i.node_name,'total': i.num})
+        elif type == 'safe':
+            queryset = Nodes.objects.annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
+            safeQueryset = Nodes.objects.filter(data__safe=True).annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
+            for i in range(len(queryset)):
+                safeRate=safeQueryset[i].num/queryset[i].num*100 if queryset[i].num!=0 else 0
+                result.append({'title': queryset[i].node_name,'total': safeRate})
         return Response(result)
 
 class OrderListViewSet(viewsets.ModelViewSet, CountModelMixin):
