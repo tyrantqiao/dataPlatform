@@ -141,7 +141,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     @action(detail=False)
     def countRank(self, request, *args, **kwargs):
         limit = self.request.query_params.get('limit', None)
-        queryset = Nodes.objects.annotate(num=Count('data__nodeId'))
+        queryset = Nodes.objects.annotate(num=Count('data__nodeId'))[:int(limit)]
         result= []
         for i in queryset:
             result.append({'title': i.node_name,'total': i.num})
