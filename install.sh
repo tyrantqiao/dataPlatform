@@ -1,19 +1,33 @@
 # update
 echo "更新系统 适用于centos系统"
+yum upgrade
 yum update -y
 ######################################
 
 # zsh
 read -p "是否需要安装一套开发环境,zsh之类的? 若需要记得ctrl+D跳出来zsh界面  y or n?  " zsh
 if [ $zsh = "y" ] ; then
-    yum install tree vim zsh git autojump autojump-zsh -y
+    yum install tree vim zsh git tree -y
     yum install gcc-c++ make -y
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     echo "zsh开发环境完成................"
 fi
 #########################################
 
-
+# vim
+read -p "是否需要升级vim，以及使用模板vim y or n?" vim
+if [ $vim = "y" ] ; then
+    yum remove vim -y
+    yum install ncurses-devel -y
+    wget https://github.com/vim/vim/archive/master.zip
+    unzip master.zip
+    cd vim-master
+    cd src/
+    ./configure
+    make
+    sudo make install
+    curl https://j.mp/spf13-vim3 -L > spf13-vim.sh && sh spf13-vim.sh
+    echo "vim update completed........................."
 
 # python3
 read -p "是否需要安装python3.6环境? y or n?   " python
@@ -26,7 +40,7 @@ fi
 # lamp
 read -p "是否需要安装Lamp环境即Linux、apache、mysql、php等常见插件?如果需要进去也需要ctrl+D退出  y or n?  " lamp
 if [ $lamp = "y" ] ; then
-    yum -y install wget screen git 
+    yum -y install wget screen git
     git clone https://github.com/teddysun/lamp.git
     cd lamp
     chmod 755 *.sh
