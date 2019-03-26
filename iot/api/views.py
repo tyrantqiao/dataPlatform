@@ -151,8 +151,7 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             last_range = datetime.datetime.now() -datetime.timedelta(days=365)
         safeNum = Data.objects.filter(recordTime__gte=last_range,safe=True).count()
         allNum = Data.objects.filter(recordTime__gte=last_range).count()
-        result= safeNum/allNum*100 if allNum!=0 else 0
-
+        result= round(safeNum/allNum*100,2) if allNum!=0 else 0
         return Response({'safeRate': result})
 
     @action(detail=False)
