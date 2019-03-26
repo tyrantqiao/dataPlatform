@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from .CountModelMixin import CountModelMixin
 from rest_framework.response import Response
 from django.db.models import Count
+import datetime
 
 # Create your views here.
 class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
@@ -121,11 +122,55 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
                     result.insert(i, {str(i)+'号': DataSerializer(unsafeQueryset.filter(recordTime__day=i),many=True).data})
         return Response(result)
 
-    """
-    根据时间返回count值
-    """
+    @action(detail=False)
+    def realTimeSafe(self, request, *args, **kwargs):
+        """实时安全率
+
+        根据时间尺度返回实时安全率数据
+        gte greater      lt  less then
+
+        Args:
+            timescale: 时间尺度,可为hour,day,week,month,year
+
+        Returns:
+            返回实时安全率数值，以dict的形式
+
+            {'safeRate': 15}
+        """
+        timescale = self.request.query_params.get('timescale',None)
+        last_range = ''
+        if timescale == 'hour':
+            last_range = datetime.datetime.now() - datetime.timedelta(hours=1)
+        elif timescale == 'day':
+            last_range = datetime.datetime.now() - datetime.timedelta(days=1)
+        elif timescale == 'week':
+            last_range = datetime.datetime.now() - datetime.timedelta(weeks=7)
+        elif timescale == 'month':
+            last_range = datetime.datetime.now() - datetime.timedelta(days=30)
+        else:
+            last_range = datetime.datetime.now() -datetime.timedelta(days=365)
+        safeNum = Data.objects.filter(recordTime__gte=last_range,safe=True).count()
+        allNum = Data.objects.filter(recordTime__gte=last_range).count()
+        result= safeNum/allNum*100 if allNum!=0 else 0
+
+        return Response({'safeRate': result})
+
     @action(detail=False)
     def countByTimescale(self, request, *args, **kwargs):
+        """根据时间返回count值
+
+        timescale可为年月类型，然后根据查询的时间数字，返回需要的count数据
+
+        Args:
+            timescale: 时间尺度可为年月
+            num: 查询时间
+
+        Returns:
+            返回一个dict类型，count数值
+            示例：
+
+            {'count': 12}
+        """
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
         if timescale == 'month':
