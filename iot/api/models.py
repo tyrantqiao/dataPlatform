@@ -18,6 +18,10 @@ class Nodes(models.Model):
     node_type = models.CharField(max_length=20)
     minVal = models.IntegerField()
     maxVal = models.IntegerField()
+    adcode = models.CharField(max_length=15)
+    longitude = models.FloatField()
+    latitude = models.FloatField()
+
 
     class Meta:
         verbose_name = "数据节点"
