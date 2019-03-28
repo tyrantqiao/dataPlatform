@@ -172,12 +172,18 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         """
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
+        count = 0
         if timescale == 'month':
-            queryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num)
+            count = Data.objects.filter(recordTime__year=2019,recordTime__month=num).count()
         elif timescale == 'year':
-            queryset = Data.objects.filter(recordTime__year=num)
-        serializer = DataSerializer(queryset, many=True)
-        return Response({'count': len(serializer.data)})
+            count = Data.objects.filter(recordTime__year=num).count()
+        elif timescale == 'today':
+            last_range = datetime.datetime.now() - datetime.timedelta(days=1)
+            count = Data.objects.filter(recordTime__gte=last_range).count()
+        elif timescale == 'hour':
+            last_range = datetime.datetime.now() - datetime.timedelta(hours=1)
+            count = Data.objects.filter(recordTime__gte=last_range).count()
+        return Response({'count': count})
 
     """
     返回数据收集排名榜，做个名字加数字总和
