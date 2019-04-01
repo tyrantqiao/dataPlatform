@@ -249,5 +249,5 @@ class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
     queryset = Nodes.objects.all().order_by('-node_type')
     serializer_class = NodesSerializer
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    search_fields = ('node_name', 'node_type', 'minVal', 'maxVal')
-    filter_fields = ('node_name', 'node_type', 'minVal', 'maxVal')
+    search_fields = ('node_name', 'node_type', 'minVal', 'maxVal', 'adcode')
+    filter_fields = ('node_name', 'node_type', 'minVal', 'maxVal', 'adcode')
