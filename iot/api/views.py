@@ -205,6 +205,31 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
                 result.append({'title': queryset[i].node_name,'total': safeRate})
         return Response(result)
 
+    """
+    返回指定id的所有count数据
+    """
+    @action(detail=False)
+    def getCount(self, request, *args, **kwargs):
+        nodeId = self.request.query_params.get('nodeId', None)
+        totalCount = Data.objects.filter(nodeId = nodeId).count()
+        daily_range = datetime.datetime.now() - datetime.timedelta(days=1)
+        dailyCount = Data.objects.filter(nodeId = nodeId, recordTime__gte=daily_range).count()
+        return Response({'totalCollect': totalCount,'dailyCollect': dailyCount})
+
+    """
+    返回指定id的safe数据
+    """
+    @action(detail=False)
+    def getSafeCount(self, request, *args, **kwargs):
+        nodeId = self.request.query_params.get('nodeId', None)
+        totalCount = Data.objects.filter(nodeId=nodeId).count()
+        totalSafeCount = Data.objects.filter(nodeId=nodeId, safe=True).count()
+        daily_range = datetime.datetime.now() - datetime.timedelta(days=1)
+        dailySafeCount = Data.objects.filter(nodeId=nodeId, recordTime__gte=daily_range).count()
+        totalSafe = round(totalSafeCount / totalCount *100,2) if totalCount!= 0 else 0
+        dailySafe = round(dailySafeCount / totalCount *100,2) if totalCount!=0 else 0
+        return Response({'totalSafe': totalSafe,'dailySafe': dailySafe})
+
 class OrderListViewSet(viewsets.ModelViewSet, CountModelMixin):
     """
     接口说明
