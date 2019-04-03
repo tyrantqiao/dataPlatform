@@ -12,6 +12,8 @@ from rest_framework.response import Response
 from .CountModelMixin import CountModelMixin
 from rest_framework.response import Response
 from django.db.models import Count
+from django.db.models import F
+from itertools import chain
 import datetime
 
 # Create your views here.
@@ -60,9 +62,12 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         timescale = self.request.query_params.get('timescale', None)
         num = self.request.query_params.get('num', None)
         type = self.request.query_params.get('type', None)
+        nodeId = self.request.query_params.get('nodeId', None)
         result = []
         if timescale == 'year':
             queryset = Data.objects.filter(recordTime__year=num)
+            if nodeId!='all' and nodeId:
+                queryset = queryset.filter(nodeId=nodeId)
             if type == 'count':
                 for i in range(1,13):
                     result.insert(i, {'x': str(i)+'月', 'y': len(DataSerializer(queryset.filter(recordTime__month=i), many=True).data)})
@@ -71,6 +76,8 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
                     result.insert(i, {str(i)+'月': DataSerializer(queryset.filter(recordTime__month=i),many=True).data})
         elif timescale == 'month':
             queryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num)
+            if nodeId!='all' and nodeId:
+                queryset = Data.objects.filter(nodeId=nodeId)
             if type == 'count':
                 for i in range(1,32):
                     result.insert(i, {'x': str(i)+'号', 'y': len(DataSerializer(queryset.filter(recordTime__day=i), many=True).data)})
@@ -85,17 +92,22 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     @action(detail=False)
     def segmentSafe(self, request, *args, **kwargs):
         timescale = self.request.query_params.get('timescale', None)
-        num = self.request.query_params.get('num', None)
         type = self.request.query_params.get('type', None)
+        nodeId = self.request.query_params.get('nodeId', None)
         result = []
         if timescale == 'year':
-            safeQueryset = Data.objects.filter(recordTime__year=num,safe=True)
-            unsafeQueryset = Data.objects.filter(recordTime__year=num,safe=False)
-            queryset = Data.objects.filter(recordTime__year=num)
+            last_range = datetime.datetime.now() - datetime.timedelta(days=365)
+            safeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=True)
+            unsafeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=False)
+            queryset = Data.objects.filter(recordTime__gte=last_range)
+            if nodeId!= 'all' and nodeId:
+                safeQueryset=safeQueryset.filter(nodeId=nodeId)
+                unsafeQueryset=unsafeQueryset.filter(nodeId=nodeId)
+                queryset=queryset.filter(nodeId=nodeId)
             if type == 'count':
                 for i in range(1,13):
-                    allNum = len(DataSerializer(queryset.filter(recordTime__month=i),many=True).data)
-                    temp = len(DataSerializer(safeQueryset.filter(recordTime__month=i), many=True).data)
+                    allNum = queryset.filter(recordTime__month=i).count()
+                    temp = safeQueryset.filter(recordTime__month=i).count()
                     y=temp/allNum*100 if allNum != 0 else 0
                     result.insert(i,{'x': str(i)+'月','y': y})
             elif type == 'safe':
@@ -105,13 +117,18 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
                 for i in range(1,13):
                     result.insert(i, {str(i)+'月': DataSerializer(unsafeQueryset.filter(recordTime__month=i),many=True).data})
         elif timescale == 'month':
-            safeQueryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num,safe=True)
-            unsafeQueryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num,safe=False)
-            queryset = Data.objects.filter(recordTime__year=2019,recordTime__month=num)
+            last_range = datetime.datetime.now() - datetime.timedelta(days=31)
+            safeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=True)
+            unsafeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=False)
+            queryset = Data.objects.filter(recordTime__gte=last_range)
+            if nodeId!= 'all' and nodeId:
+                safeQueryset=safeQueryset.filter(nodeId=nodeId)
+                unsafeQueryset=unsafeQueryset.filter(nodeId=nodeId)
+                queryset=queryset.filter(nodeId=nodeId)
             if type == 'count':
                 for i in range(1,32):
-                    allNum = len(DataSerializer(queryset.filter(recordTime__day=i),many=True).data)
-                    temp = len(DataSerializer(safeQueryset.filter(recordTime__day=i), many=True).data)
+                    allNum = queryset.filter(recordTime__day=i).count()
+                    temp = safeQueryset.filter(recordTime__day=i).count()
                     y=temp/allNum*100 if allNum != 0 else 0
                     result.insert(i,{'x': str(i)+'号','y': y})
             elif type == 'safe':
@@ -120,7 +137,64 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             else:
                 for i in range(1,32):
                     result.insert(i, {str(i)+'号': DataSerializer(unsafeQueryset.filter(recordTime__day=i),many=True).data})
+        elif timescale == 'today':
+            last_range = datetime.datetime.now() - datetime.timedelta(days=1)
+            safeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=True)
+            unsafeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=False)
+            queryset = Data.objects.filter(recordTime__gte=last_range)
+            if nodeId!= 'all' and nodeId:
+                safeQueryset=safeQueryset.filter(nodeId=nodeId)
+                unsafeQueryset=unsafeQueryset.filter(nodeId=nodeId)
+                queryset=queryset.filter(nodeId=nodeId)
+            if type == 'count':
+                for i in range(1,25):
+                    allNum = queryset.filter(recordTime__hour=i).count()
+                    temp = safeQueryset.filter(recordTime__hour=i).count()
+                    y=temp/allNum*100 if allNum != 0 else 0
+                    result.insert(i,{'x': str(i)+'点','y': y})
+            elif type == 'safe':
+                for i in range(1,25):
+                    result.insert(i, {str(i)+'点': DataSerializer(safeQueryset.filter(recordTime__hour=i),many=True).data})
+            else:
+                for i in range(1,25):
+                    result.insert(i, {str(i)+'点': DataSerializer(unsafeQueryset.filter(recordTime__hour=i),many=True).data})
         return Response(result)
+
+    """
+    返回三天的图标，用于linechart表格的展示
+
+    order_by  '-' 从大到小,不加则为从小到大
+    """
+    @action(detail=False)
+    def lineChartData(self, request, *args, **kwargs):
+        nodeId = self.request.query_params.get('nodeId', None)
+        today_range = datetime.datetime.now() - datetime.timedelta(days=1)
+        yesterday_range = datetime.datetime.now() - datetime.timedelta(days=2)
+        today_queryset = Data.objects.filter(nodeId=nodeId,recordTime__range=[today_range,datetime.datetime.now()])
+        yesterday_queryset = Data.objects.filter(nodeId=nodeId,recordTime__range=[yesterday_range,today_range])
+        today_count = today_queryset.count()
+        yesterday_count = yesterday_queryset.count()
+        today_safe = today_queryset.filter(safe=True).values(x=F('recordTime'),y1=F('val'))
+        today_unsafe = today_queryset.filter(safe=False).values(x=F('recordTime'),y2=F('val'))
+        yesterday_safe = yesterday_queryset.filter(safe=True).values(x=F('recordTime'),y1=F('val'))
+        yesterday_unsafe = yesterday_queryset.filter(safe=False).values(x=F('recordTime'),y2=F('val'))
+        result= [{'name':'今天','cvr':today_count},{'name':'昨天','cvr':yesterday_count}]
+        for i in today_safe:
+            i['y2']=0
+        for i in today_unsafe:
+            i['y1']=0
+        for i in yesterday_safe:
+            i['y2']=0
+        for i in yesterday_unsafe:
+            i['y1']=0
+        today = list(chain(today_safe,today_unsafe))
+        yesterday = list(chain(yesterday_safe,yesterday_unsafe))
+        #today = today_safe | today_unsafe
+        #yesterday = yesterday_safe | yesterday_unsafe
+        result[0]['shop']=sorted(today, key=lambda x:x['x'])
+        result[1]['shop']=sorted(yesterday, key=lambda x:x['x'])
+        return Response(result)
+
 
     @action(detail=False)
     def realTimeSafe(self, request, *args, **kwargs):
