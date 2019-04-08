@@ -4,6 +4,18 @@ yum upgrade
 yum update -y
 ######################################
 
+read -p "安装docker y or n?" docker
+if [ $docker = "y" ] ; then
+    yum remove docker docker-engine docker-client docker-latest docker-common
+    yum install -y yum-utils device-mapper-persistent-data lvm2
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    yum install -y docker-ce docker-ce-cli containerd.io
+    systemctl start docker
+    yum -y install epel-release
+    pip -y install docker-compose
+    echo "docker安装完毕..........."
+fi
+
 # zsh
 read -p "是否需要安装一套开发环境,zsh之类的? 若需要记得ctrl+D跳出来zsh界面  y or n?  " zsh
 if [ $zsh = "y" ] ; then
