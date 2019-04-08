@@ -9,6 +9,7 @@ services:
     restart: always
     volumes:
       - ./db:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/my.cnf
     environment:
       - MYSQL_DATABASE=iot
       - MYSQL_ROOT_PASSWORD=%5QWERzxc
