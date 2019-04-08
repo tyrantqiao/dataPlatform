@@ -1,0 +1,37 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    expose:
+      - '3306'
+    ports:
+      - 3306:3306
+    restart: always
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=iot
+      - MYSQL_ROOT_PASSWORD=%5QWERzxc
+
+  backend:
+    build: .
+    command: bash -c "cd iot && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
+    volumes:
+      - .:/home/dataPlatform
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    ports:
+      - "8001:8001"
+    restart: always
+  # environment:
+  #   - MYSQL_HOST=mysql
+  #   - MYSQL_DATABASE=iot
+  #    - MYSQL_ROOT_PASSWORD=%5QWERzxc
+
+  portainer:
+    image: portainer/portainer
+    container_name: "portainer-app"
+    ports:
+      - "9000:9000"
