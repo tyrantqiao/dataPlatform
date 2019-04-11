@@ -28,6 +28,12 @@ DEBUG = True
 # qiao disallowedHost error
 ALLOWED_HOSTS = ['*']
 
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'dataplatformrobot@163.com'
+EMAIL_HOST_PASSWORD = '4QWERzxc'
+EMAIL_FROM = 'dataplatformrobot@163.com'
+# # EMAIL_USE_TSL = False
 
 # Application definition
 # qiao: add djangorestframework
@@ -41,6 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'api',
+    'captcha',
+    'permission',
     'corsheaders',
 ]
 
@@ -82,6 +90,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
 }
 
 # Database

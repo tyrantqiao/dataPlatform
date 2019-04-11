@@ -22,18 +22,7 @@ from rest_framework import routers, serializers, viewsets
 from api.views import NodesListViewSet,DataListViewSet,SearchDataListViewSet,OrderListViewSet,CommodityListViewSet
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
-
-# qiao: create rest_framework api
-# Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'is_staff')
-
-# ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+from permission.views import *
 
 # Routers provide an easy way of automatically determining the URL conf.
 # qiao: This register the docs page :8000/docs
@@ -52,6 +41,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^', include('api.urls')),
+    url(r'^captcha', include('captcha.urls')),
+    url(r'^register', UserRegisterAPIView.as_view()),
+    url(r'^login', UserLoginAPIView.as_view()),
     url(r'^api/', include(router.urls)),
     url(r'docs/', include_docs_urls(title="后台接口")),
     url(r'^', include(router.urls)),
