@@ -28,12 +28,20 @@ DEBUG = True
 # qiao disallowedHost error
 ALLOWED_HOSTS = ['*']
 
-EMAIL_HOST = 'smtp.163.com'
-EMAIL_PORT = 25
-EMAIL_HOST_USER = 'dataplatformrobot@163.com'
-EMAIL_HOST_PASSWORD = '4QWERzxc'
-EMAIL_FROM = 'dataplatformrobot@163.com'
-# # EMAIL_USE_TSL = False
+# django_simple_captcha 验证码配置其他配置项查看文档
+# 默认格式
+CAPTCHA_OUTPUT_FORMAT = '%(image)s %(text_field)s %(hidden_field)s '
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', # 没有样式
+# 'captcha.helpers.noise_arcs', # 线
+# 'captcha.helpers.noise_dots', # 点
+)
+# 图片中的文字为随机英文字母，如 mdsh
+# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge'
+# 图片中的文字为数字表达式，如2+2=
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+# 超时(minutes)
+CAPTCHA_TIMEOUT = 1
+
 
 # Application definition
 # qiao: add djangorestframework
@@ -110,7 +118,9 @@ DATABASES = {
         'USER': 'root',
         # Here to set your password, By the way, If you want to use install.sh, then this password cannot change until installation completed.
         'PASSWORD': '%5QWERzxc',
-        'HOST': 'mysql',
+        # qiao: HOST be careful, dockercompose use mysql container name
+        # local run use ip
+        'HOST': '127.0.0.1',
         'PORT': '3306',
         'API': {
             'charset': 'utf8',
@@ -160,3 +170,18 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# session
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_SAVE_EVERY_REQUEST = False
+
+# email 163 settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+SERVER_EMAIL = 'tyrantqiao@qq.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'tyrantqiao@qq.com'
+EMAIL_HOST_PASSWORD = 'zfmkpurojvolbiad'
+EMAIL_FROM = 'tyrantqiao <tyrantqiao@qq.com>'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

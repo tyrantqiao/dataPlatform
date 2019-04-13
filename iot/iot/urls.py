@@ -33,7 +33,8 @@ router.register(r'data', DataListViewSet)
 router.register(r'searchData', SearchDataListViewSet)
 router.register(r'order', OrderListViewSet)
 router.register(r'commodity', CommodityListViewSet)
-
+router.register(r'user', UserViewSet)
+router.register(r'email', EmailCodeViewset)
 
 # qiao: add rest framwork's login and logout views
 # error: django2.0 will not support app_name, change to include('blog.urls')
@@ -41,10 +42,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     #url(r'^', include('api.urls')),
-    url(r'^captcha', include('captcha.urls')),
-    url(r'^register', UserRegisterAPIView.as_view()),
-    url(r'^login', UserLoginAPIView.as_view()),
+    url(r'^captcha/', include('captcha.urls')),
+    url(r'^register/', UserRegisterAPIView.as_view()),
+    url(r'^login/', UserLoginAPIView.as_view()),
+    url(r'^vertification/', CaptchaAPIView.as_view()),
     url(r'^api/', include(router.urls)),
+    url(r'^permission/', include(router.urls)),
     url(r'docs/', include_docs_urls(title="后台接口")),
     url(r'^', include(router.urls)),
 ]
