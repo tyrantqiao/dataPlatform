@@ -40,14 +40,12 @@ class SearchData(models.Model):
         id: index
         keyword: 关键词
         count: 排名
-        range: 涨幅
         status: 状态
     """
     id = models.AutoField(primary_key=True)
-    keyword = models.CharField(max_length=20)
-    count = models.IntegerField()
-    range = models.FloatField()
-    status = models.FloatField()
+    keyword = models.CharField(max_length=20,unique=True)
+    count = models.IntegerField(default=1)
+    status = models.FloatField(default=0)
 
     class Meta:
         verbose_name = "搜索数据"

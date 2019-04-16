@@ -1,14 +1,11 @@
 from django.shortcuts import render
 from .models import Nodes,Data,SearchData,Commodity,Order
-from rest_framework import mixins
+from rest_framework import mixins,status,filters,viewsets
 from .serializers import NodesSerializer,DataSerializer,SearchDataSerializer,OrderSerializer,CommoditySerializer
-from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
 from .filters import NodesFilter
 from rest_framework.decorators import action
-from rest_framework import status
 from rest_framework.response import Response
 from .CountModelMixin import CountModelMixin
 from django.db.models import Count,F
@@ -336,8 +333,28 @@ class SearchDataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     queryset = SearchData.objects.all().order_by('-keyword')
     serializer_class = SearchDataSerializer
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    search_fields = ('keyword', 'count', 'range', 'status')
-    filter_fields = ('keyword', 'count', 'range', 'status')
+    search_fields = ('keyword', 'count', 'status')
+    filter_fields = ('keyword', 'count', 'status')
+
+    @action(detail=False,methods=['POST'])
+    def addHistory(self, request, *args, **kwargs):
+        searchName = self.request.data.get('keyword')
+        try:
+            searchHistory = SearchData.objects.filter(keyword=searchName)
+            if searchHistory.count() > 0:
+                count = SearchData.objects.get(keyword=searchName).count + 1
+                searchHistory.update(count=count)
+                return Response({'msg:':'add history count successfully'},status=status.HTTP_200_OK)
+            else:
+                searchHistory = SearchData(keyword=searchName)
+                searchHistory.save()
+                return Response({'msg': 'add history data successfully'},status= status.HTTP_200_OK)
+        except:
+            searchHistory = SearchData(keyword=searchName)
+            searchHistory.save()
+            return Response({'msg': searchHistory},status= status.HTTP_200_OK)
+
+ #           return Response({'msg':'error'},status= status.HTTP_400_BAD_REQUEST)
 
 # 可选用的模型mixins.ListModelMixin, viewsets.GenericViewSet 自定义型
 class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
