@@ -40,7 +40,7 @@ if [ $vim = "y" ] ; then
     sudo make install
     curl https://j.mp/spf13-vim3 -L > spf13-vim.sh && sh spf13-vim.sh
     echo "vim update completed........................."
-
+fi
 # python3
 read -p "是否需要安装python3.6环境? y or n?   " python
 if [ $python = "y" ] ; then
