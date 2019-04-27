@@ -18,6 +18,8 @@ class Nodes(models.Model):
     node_type = models.CharField(max_length=20)
     minVal = models.IntegerField()
     maxVal = models.IntegerField()
+    subscribe = models.BooleanField(default=False)
+    nodeId = models.CharField(max_length=50,default='')
     adcode = models.CharField(max_length=15)
     longitude = models.FloatField()
     latitude = models.FloatField()
