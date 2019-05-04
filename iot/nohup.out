@@ -37971,3 +37971,17 @@ ConnectionResetError: [Errno 104] Connection reset by peer
 [26/Apr/2019 19:30:56] "GET /data/segmentSafe/?timescale=year&type=count&nodeId=all HTTP/1.1" 200 295
 [26/Apr/2019 19:30:57] "GET /searchData/ HTTP/1.1" 200 223
 [26/Apr/2019 19:30:57] "GET /data/segmentData/?timescale=year&num=2019&type=count&nodeId=all HTTP/1.1" 200 234
+[27/Apr/2019 23:56:37] "GET /api/nodes/ HTTP/1.1" 200 1045
+Internal Server Error: /nodes/subscibe
+Traceback (most recent call last):
+  File "/home/qiao/dataPlatform/backend/lib/python3.6/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/home/qiao/dataPlatform/backend/lib/python3.6/site-packages/django/utils/deprecation.py", line 90, in __call__
+    response = self.process_request(request)
+  File "/home/qiao/dataPlatform/backend/lib/python3.6/site-packages/django/middleware/common.py", line 53, in process_request
+    path = self.get_full_path_with_slash(request)
+  File "/home/qiao/dataPlatform/backend/lib/python3.6/site-packages/django/middleware/common.py", line 93, in get_full_path_with_slash
+    'url': request.get_host() + new_path,
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 193.112.28.19:8001/nodes/subscibe/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[27/Apr/2019 23:56:38] "POST /nodes/subscibe HTTP/1.1" 500 66032
+[28/Apr/2019 02:44:16] "GET / HTTP/1.1" 200 358

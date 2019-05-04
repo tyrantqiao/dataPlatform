@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'captcha',
     'permission',
     'corsheaders',
+    #'django_mqtt',
+    #'django_mqtt.mosquitto.auth_plugin',
+    #'django_mqtt.publisher',
 ]
 
 MIDDLEWARE = [

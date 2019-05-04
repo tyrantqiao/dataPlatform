@@ -5,10 +5,12 @@ from .serializers import NodesSerializer,DataSerializer,SearchDataSerializer,Ord
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import NodesFilter
+from .mqtt import *
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .CountModelMixin import CountModelMixin
 from django.db.models import Count,F
+from rest_framework.decorators import api_view
 from itertools import chain
 import datetime
 
@@ -364,5 +366,18 @@ class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
     queryset = Nodes.objects.all().order_by('-node_type')
     serializer_class = NodesSerializer
     filter_backends = (filters.SearchFilter, DjangoFilterBackend,)
-    search_fields = ('node_name', 'node_type', 'minVal', 'maxVal', 'adcode')
-    filter_fields = ('node_name', 'node_type', 'minVal', 'maxVal', 'adcode')
+    search_fields = ('node_name', 'node_type', 'minVal', 'maxVal', 'adcode','nodeId','subscribe')
+    filter_fields = ('node_name', 'node_type', 'minVal', 'maxVal', 'adcode','nodeId','subscribe')
+
+    @action(detail=True,methods=['POST'])
+    def subscribe(self,request,*args,**kwargs):
+        nodeId = self.request.data.get('nodeId')
+        subscribe =self.request.data.get('subscribe')
+        try:
+            subscribeNode =Nodes.objects.get(nodeId=nodeId)
+            subscribeNode.subscribe=subscribe
+            subscribeNode.save()
+            mqtt.client.loop_start()
+            return Response({'msg':'successfully change'},status=status.HTTP_200_OK)
+        except:
+            return Response({'msg':'error with nodeId'},status=status.HTTP_404_NOT_FOUND)

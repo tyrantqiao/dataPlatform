@@ -122,6 +122,10 @@ class Data(models.Model):
     val = models.FloatField()
     unit = models.CharField(max_length=10)
     safe = models.BooleanField()
+    confirmed = models.BooleanField(default=False)
+    fPort = models.IntegerField(default=0)
+    reference: models.CharField(max_length=50,default="")
+    data = models.CharField(max_length=50,default="")
     recordTime = models.DateTimeField()
 
     class Meta:
