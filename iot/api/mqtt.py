@@ -18,10 +18,14 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     str_data=str(msg.payload,encoding="utf-8")
     nodeId = re.search(r'application/1/device/(.*)/rx', msg.topic,re.M|re.I).group(1)
-    #data = Data(nodeId=nodeId,)
     json_data=json.loads(str_data)
-    print(nodeId+":"+decode_base_data(json_data['data']))
-    print(msg.topic+" with  "+ str_data)
+    hex_data,bool_mode,val,intensity,time=decode_base_data(json_data['data'])
+    create_data = Data(nodeId=nodeId,val=val,fPort=json_data['fPort'],intensity=intensity,time=time,confirmed=json_data['confirmed'],data=hex_data,safe=True,unit="du",reference=json_data['reference'])
+    print(create_data)
+    create_data.save()
+    print(json_data)
+    #print(nodeId+":"+hex_data)
+    #print(str(bool_mode)+str(val)+":"+str(intensity)+":"+str(time))
 
 def decode_base_data(data):
     hex_data=base64.b64decode(data).hex()
@@ -30,8 +34,7 @@ def decode_base_data(data):
     val = re_search.group(2)
     intensity = re_search.group(3)
     time = re_search.group(4)
-    print(str(bool_mode)+":"+val+"-----"+intensity+"----------"+time)
-    return hex_data
+    return hex_data,bool_mode,int(val,16)/100.0,int(intensity,16)/100.0,str(base64.b16decode(time),encoding="utf-8")
 
 client = mqtt.Client()
 client.on_connect = on_connect

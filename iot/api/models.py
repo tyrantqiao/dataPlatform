@@ -19,11 +19,10 @@ class Nodes(models.Model):
     minVal = models.IntegerField()
     maxVal = models.IntegerField()
     subscribe = models.BooleanField(default=False)
-    nodeId = models.CharField(max_length=50,default='')
+    nodeId = models.CharField(max_length=50,unique=True)
     adcode = models.CharField(max_length=15)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-
+    longitude = models.FloatField(null=True,blank=True)
+    latitude = models.FloatField(null=True,blank=True)
 
     class Meta:
         verbose_name = "数据节点"
@@ -120,6 +119,8 @@ class Data(models.Model):
     id = models.AutoField(primary_key=True)
     nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE)
     val = models.FloatField()
+    intensity =models.FloatField()
+    time = models.CharField(max_length=50,default="")
     unit = models.CharField(max_length=10)
     safe = models.BooleanField()
     confirmed = models.BooleanField(default=False)
