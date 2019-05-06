@@ -377,7 +377,7 @@ class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
             subscribeNode =Nodes.objects.get(nodeId=nodeId)
             subscribeNode.subscribe=subscribe
             subscribeNode.save()
-            mqtt.client.loop_start()
+            #mqtt.client.loop_start()
             return Response({'msg':'successfully change'},status=status.HTTP_200_OK)
         except:
             return Response({'msg':'error with nodeId'},status=status.HTTP_404_NOT_FOUND)

@@ -1,4 +1,5 @@
 from django.db import models
+import django.utils.timezone as timezone
 
 # Create your models here.
 class Nodes(models.Model):
@@ -117,17 +118,18 @@ class Data(models.Model):
         recordTime: 数据记录时间
     """
     id = models.AutoField(primary_key=True)
-    nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE)
+    nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE, null=True, blank=True)
+    device_id = models.ForeignKey(Nodes,to_field="nodeId", null=True, blank=True, db_column="device_id",on_delete=models.CASCADE,related_name="data_device_id")
     val = models.FloatField()
     intensity =models.FloatField()
-    time = models.CharField(max_length=50,default="")
+    time = models.CharField(max_length=50,default="",blank=True)
     unit = models.CharField(max_length=10)
     safe = models.BooleanField()
     confirmed = models.BooleanField(default=False)
     fPort = models.IntegerField(default=0)
-    reference: models.CharField(max_length=50,default="")
-    data = models.CharField(max_length=50,default="")
-    recordTime = models.DateTimeField()
+    reference= models.CharField(max_length=100,default="")
+    data = models.CharField(max_length=100,default="")
+    recordTime = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name = "数值表"
