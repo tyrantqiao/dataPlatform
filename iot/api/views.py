@@ -99,9 +99,9 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             unsafeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=False)
             queryset = Data.objects.filter(recordTime__gte=last_range)
             if nodeId!= 'all' and nodeId:
-                safeQueryset=safeQueryset.filter(nodeId=nodeId)
-                unsafeQueryset=unsafeQueryset.filter(nodeId=nodeId)
-                queryset=queryset.filter(nodeId=nodeId)
+                safeQueryset=safeQueryset.filter(device_id=nodeId)
+                unsafeQueryset=unsafeQueryset.filter(device_id=nodeId)
+                queryset=queryset.filter(device_id=nodeId)
             if type == 'count':
                 for i in range(1,13):
                     allNum = queryset.filter(recordTime__month=i).count()
@@ -120,9 +120,9 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             unsafeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=False)
             queryset = Data.objects.filter(recordTime__gte=last_range)
             if nodeId!= 'all' and nodeId:
-                safeQueryset=safeQueryset.filter(nodeId=nodeId)
-                unsafeQueryset=unsafeQueryset.filter(nodeId=nodeId)
-                queryset=queryset.filter(nodeId=nodeId)
+                safeQueryset=safeQueryset.filter(device_id=nodeId)
+                unsafeQueryset=unsafeQueryset.filter(device_id=nodeId)
+                queryset=queryset.filter(device_id=nodeId)
             if type == 'count':
                 for i in range(1,32):
                     allNum = queryset.filter(recordTime__day=i).count()
@@ -141,9 +141,9 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
             unsafeQueryset = Data.objects.filter(recordTime__gte=last_range,safe=False)
             queryset = Data.objects.filter(recordTime__gte=last_range)
             if nodeId!= 'all' and nodeId:
-                safeQueryset=safeQueryset.filter(nodeId=nodeId)
-                unsafeQueryset=unsafeQueryset.filter(nodeId=nodeId)
-                queryset=queryset.filter(nodeId=nodeId)
+                safeQueryset=safeQueryset.filter(device_id=nodeId)
+                unsafeQueryset=unsafeQueryset.filter(device_id=nodeId)
+                queryset=queryset.filter(device_id=nodeId)
             if type == 'count':
                 for i in range(1,25):
                     allNum = queryset.filter(recordTime__hour=i).count()
@@ -168,8 +168,8 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         nodeId = self.request.query_params.get('nodeId', None)
         today_range = datetime.datetime.now() - datetime.timedelta(days=1)
         yesterday_range = datetime.datetime.now() - datetime.timedelta(days=2)
-        today_queryset = Data.objects.filter(nodeId=nodeId,recordTime__range=[today_range,datetime.datetime.now()])
-        yesterday_queryset = Data.objects.filter(nodeId=nodeId,recordTime__range=[yesterday_range,today_range])
+        today_queryset = Data.objects.filter(device_id=nodeId,recordTime__range=[today_range,datetime.datetime.now()])
+        yesterday_queryset = Data.objects.filter(device_id=nodeId,recordTime__range=[yesterday_range,today_range])
         today_count = today_queryset.count()
         yesterday_count = yesterday_queryset.count()
         today_safe = today_queryset.filter(safe=True).values(x=F('recordTime'),y1=F('val'))
@@ -266,12 +266,12 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
         type = self.request.query_params.get('type', None)
         result= []
         if type == 'data':
-            queryset = Nodes.objects.annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
+            queryset = Nodes.objects.annotate(num=Count('data__device_id_id')).order_by('-num')[:int(limit)]
             for i in queryset:
                 result.append({'title': i.node_name,'total': i.num})
         elif type == 'safe':
-            queryset = Nodes.objects.annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
-            safeQueryset = Nodes.objects.filter(data__safe=True).annotate(num=Count('data__nodeId')).order_by('-num')[:int(limit)]
+            queryset = Nodes.objects.annotate(num=Count('data__device_id_id')).order_by('-num')[:int(limit)]
+            safeQueryset = Nodes.objects.filter(data__safe=True).annotate(num=Count('data__device_id')).order_by('-num')[:int(limit)]
             for i in range(len(safeQueryset)):
                 safeRate=safeQueryset[i].num/queryset[i].num*100 if queryset[i].num!=0 else 0
                 result.append({'title': queryset[i].node_name,'total': safeRate})
@@ -283,9 +283,9 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     @action(detail=False)
     def getCount(self, request, *args, **kwargs):
         nodeId = self.request.query_params.get('nodeId', None)
-        totalCount = Data.objects.filter(nodeId = nodeId).count()
+        totalCount = Data.objects.filter(device_id = nodeId).count()
         daily_range = datetime.datetime.now() - datetime.timedelta(days=1)
-        dailyCount = Data.objects.filter(nodeId = nodeId, recordTime__gte=daily_range).count()
+        dailyCount = Data.objects.filter(device_id = nodeId, recordTime__gte=daily_range).count()
         return Response({'totalCollect': totalCount,'dailyCollect': dailyCount})
 
     """
@@ -294,10 +294,10 @@ class DataListViewSet(viewsets.ModelViewSet, CountModelMixin):
     @action(detail=False)
     def getSafeCount(self, request, *args, **kwargs):
         nodeId = self.request.query_params.get('nodeId', None)
-        totalCount = Data.objects.filter(nodeId=nodeId).count()
-        totalSafeCount = Data.objects.filter(nodeId=nodeId, safe=True).count()
+        totalCount = Data.objects.filter(device_id=nodeId).count()
+        totalSafeCount = Data.objects.filter(device_id=nodeId, safe=True).count()
         daily_range = datetime.datetime.now() - datetime.timedelta(days=1)
-        dailySafeCount = Data.objects.filter(nodeId=nodeId, recordTime__gte=daily_range).count()
+        dailySafeCount = Data.objects.filter(device_id=nodeId, recordTime__gte=daily_range).count()
         totalSafe = round(totalSafeCount / totalCount *100,2) if totalCount!= 0 else 0
         dailySafe = round(dailySafeCount / totalCount *100,2) if totalCount!=0 else 0
         return Response({'totalSafe': totalSafe,'dailySafe': dailySafe})
