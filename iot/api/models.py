@@ -45,7 +45,7 @@ class SearchData(models.Model):
         status: 状态
     """
     id = models.AutoField(primary_key=True)
-    keyword = models.CharField(max_length=20,unique=True)
+    keyword = models.CharField(max_length=150,unique=True)
     count = models.IntegerField(default=1)
     status = models.FloatField(default=0)
 
@@ -118,8 +118,8 @@ class Data(models.Model):
         recordTime: 数据记录时间
     """
     id = models.AutoField(primary_key=True)
-    nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE, null=True, blank=True)
-    device_id = models.ForeignKey(Nodes,to_field="nodeId", null=True, blank=True, db_column="device_id",on_delete=models.CASCADE,related_name="data_device_id")
+    #nodeId = models.ForeignKey(Nodes, on_delete=models.CASCADE, null=True, blank=True)
+    nodeId = models.ForeignKey(Nodes,to_field="nodeId", null=True, blank=True, db_column="nodeId",on_delete=models.CASCADE)
     val = models.FloatField()
     intensity =models.FloatField()
     time = models.CharField(max_length=50,default="",blank=True)
