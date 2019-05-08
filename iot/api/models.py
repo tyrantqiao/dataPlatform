@@ -20,6 +20,7 @@ class Nodes(models.Model):
     minVal = models.IntegerField()
     maxVal = models.IntegerField()
     subscribe = models.BooleanField(default=False)
+    tx =models.BooleanField(default=False)
     nodeId = models.CharField(max_length=50,unique=True)
     adcode = models.CharField(max_length=15)
     longitude = models.FloatField(null=True,blank=True)

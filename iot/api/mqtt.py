@@ -25,8 +25,9 @@ def on_message(client, userdata, msg):
     #print(intensity)
     #print(hex_data)
     #print(time+" is time")
+    #print(hex_data)
     #Data.objects.create(val=val,intensity=intensity,unit="du",safe=True,device_id_id=nodeId)
-    Data.objects.create(nodeId_id=nodeId,val=val,data=json_data['data'],fPort=json_data['fPort'],confirmed=json_data['confirmed'],intensity=intensity,safe=True,unit="du",reference=json_data['reference'])
+    Data.objects.create(nodeId_id=nodeId,val=val,data=json_data['data'],time=time,fPort=json_data['fPort'],intensity=intensity,safe=True,unit="du")
     #print(create_data)
     #create_data.save()
     print("saving done")
@@ -36,12 +37,14 @@ def on_message(client, userdata, msg):
 
 def decode_base_data(data):
     hex_data=base64.b64decode(data).hex()
-    re_search = re.search('31010001(\d{2}).*0801\d{2}(.*)0901\d{2}(.*)0a03\d{2}(.*)0b03', hex_data,re.M|re.I)
+    re_search = re.search('31010001(\d{2}).*0801.{2}(.*)0901.{2}(.*)0a03.{2}(.*)0b03', hex_data,re.M|re.I)
     bool_mode = re_search.group(1)=='01'
     val = re_search.group(2)
     intensity = re_search.group(3)
     time = re_search.group(4)
-    return hex_data,bool_mode,int(val,16)/100.0,int(intensity,16)/100.0,str(base64.b16decode(time),encoding="utf-8")
+    print(intensity)
+    print("decode done")
+    return hex_data,bool_mode,int(val,16)/100.0,int(intensity,16)/10.0-150,str(base64.b16decode(time),encoding="utf-8")
 
 client = mqtt.Client()
 client.on_connect = on_connect

@@ -12,6 +12,8 @@ from .CountModelMixin import CountModelMixin
 from django.db.models import Count,F
 from rest_framework.decorators import api_view
 from itertools import chain
+import time
+import json
 import datetime
 
 # Create your views here.
@@ -377,8 +379,35 @@ class NodesListViewSet(viewsets.ModelViewSet, CountModelMixin):
             subscribeNode =Nodes.objects.get(nodeId=nodeId)
             subscribeNode.subscribe=subscribe
             subscribeNode.save()
-            client.loop_stop()
+            topics=list(Nodes.objects.filter(subscribe=True).values_list('nodeId',flat=True))
+            for i,item in enumerate(topics):
+                topics[i] = ("application/1/device/"+topics[i]+"/rx",0)
+            topics.append(("gateway/+/rx",0))
+            print(topics)
+            #client.subscribe([("gateway/+/rx",0),("application/1/device/+/rx",0)])
+            client.subscribe(topics)
+            print("subscribing done")
+            #client.loop_stop()
+            #time.sleep(5)
             client.loop_start()
             return Response({'msg':'successfully change'},status=status.HTTP_200_OK)
         except:
             return Response({'msg':'error with nodeId'},status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True,methods=['POST'])
+    def test(self,request,*args,**kwargs):
+        tx = self.request.data.get('tx')
+        nodeId = self.request.data.get('nodeId')
+        msg=''
+        topic= "application/1/device/"+nodeId+"/tx"
+        print("tx with:"+topic)
+        if tx == True:
+            msg={"reference":"abcd34","confirmed":False,"fPort":10,"data":"MQEAAQE="}
+        #else:
+        #    msg={"reference":"abcd1234","confirmed":False,"fPort":10,"data":"MQEAAQA="}
+        str_msg=json.dumps(msg)
+        client.publish(topic,str_msg,0)
+        node = Nodes.objects.get(nodeId=nodeId)
+        node.tx=tx
+        node.save()
+        return Response({'msg':'tx change successfully'},status=status.HTTP_200_OK)
