@@ -123,11 +123,12 @@ DATABASES = {
         'PASSWORD': '%5QWERzxc',
         # qiao: HOST be careful, dockercompose use mysql container name
         # local run use ip
-        'HOST': '127.0.0.1',
+        #'HOST': '127.0.0.1',
+        'HOST': 'mysql',
         'PORT': '3306',
         'API': {
             'charset': 'utf8',
-	    'COLLATION': 'utf8_general_ci',
+            'COLLATION': 'utf8_general_ci',
         }
     }
 }
