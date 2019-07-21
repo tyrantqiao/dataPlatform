@@ -124,7 +124,9 @@ DATABASES = {
         # qiao: HOST be careful, dockercompose use mysql container name
         # local run use ip
         #'HOST': '127.0.0.1',
+        #'HOST': '193.112.44.251',
         'HOST': 'mysql',
+        #'HOST': 'qiao_mysql_1',
         'PORT': '3306',
         'API': {
             'charset': 'utf8',

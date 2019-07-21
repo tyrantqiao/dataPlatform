@@ -4,12 +4,15 @@ services:
     image: mysql:5.7
     expose:
       - '3306'
+    #network_mode: "host"
     ports:
       - 3306:3306
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - ./dataPlatform/db:/var/lib/mysql
       - ./dataPlatform/db/my.cnf:/etc/mysql/my.cnf
+      - ./dataPlatform/db/init:/docker-entrypoint-initdb.d/
     environment:
       - MYSQL_DATABASE=iot
       - MYSQL_ROOT_PASSWORD=%5QWERzxc
@@ -20,14 +23,14 @@ services:
     volumes:
       - ./ant_frontend:/usr/src/app/
     ports:
-      - "8000:8000"
+      - "9001:8000"
     restart: always
     depends_on:
       - backend
 
   backend:
     build: ./dataPlatform/
-    command: bash -c "cd iot && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
+    command: bash -c "cd iot && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8001"
     volumes:
       - ./dataPlatform:/backend
     links:
@@ -35,7 +38,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - "8001:8001"
+      - "9002:8001"
     restart: always
   # environment:
   #   - MYSQL_HOST=mysql
