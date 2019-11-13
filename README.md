@@ -9,3 +9,7 @@ https://github.com/tyrantqiao/dataPlatform
 - 实现数据展示以及采集
 - 权限模块
 - 一键安装脚本设计
+
+## 调试界面
+
+Django后端接口调试界面http://ip:port/docs/
