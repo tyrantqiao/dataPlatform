@@ -18,7 +18,7 @@ djangorestframework==3.9.2
 httpie>=1.0.3
 idna==2.8
 itypes==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 Markdown==3.0.1
 MarkupSafe==1.1.1
 mycli==1.19.0
